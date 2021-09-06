@@ -1,5 +1,5 @@
-name: example component
-label: An exampel component to bootstrap your dev
+name: code_python
+label: An example a Python Code
 description: This component is a very basic one that does nothing useful but meet all the requirements for a custom components
 inputs:
 - name: src
@@ -20,5 +20,5 @@ implementation:
     args: [
       --src, {inputPath: src},
       --dst, {outputPath: dst}, 
-      --arg-1, {inputValue: arg_1}
+      --code, {inputValue: code}
       ]

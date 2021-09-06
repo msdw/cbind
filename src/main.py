@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 
-def main(dataframe: pd.DataFrame, arg_1: str='nothing') -> pd.DataFrame:
+def main(df: pd.DataFrame, code: str='print("demo")') -> pd.DataFrame:
     """Add a new column named placeholder fill with the arg_1 value
 
 
@@ -17,8 +17,12 @@ def main(dataframe: pd.DataFrame, arg_1: str='nothing') -> pd.DataFrame:
 
     :returns: The updated dataframe
     """
-    dataframe["placeholder"] = arg_1
-    return dataframe
+    # execute code
+    try:
+        exec(code)
+    except:
+        print("Exception in Your Code, Please check")
+    return df
 
 
 if __name__ == '__main__':
@@ -26,13 +30,13 @@ if __name__ == '__main__':
     # By executing your script with a python main [ARGS]
 
     # Put meaningful description and args for your user
-    parser = argparse.ArgumentParser(description='Extracting Storage Requirements from text')
+    parser = argparse.ArgumentParser(description='Add Python Script')
     
     # do not use positionnal argument, always use the --arg syntax
     # note all the args name are they must be reported in the yaml component file
     parser.add_argument('--src', required=True, type=str, help='Path of the local file containing the Input data.')
     parser.add_argument('--dst', required=True, type=str, help='Path of the local file for output data.')
-    parser.add_argument('--arg-1', required=True, type=str, help='Some parameter')
+    parser.add_argument('--code', required=True, type=str, help='Python Code to Execute')
 
         
 
@@ -41,13 +45,13 @@ if __name__ == '__main__':
     dst=args.dst
     
     # Warning : remember that argparse will convert any - to _ ( https://docs.python.org/dev/library/argparse.html#dest 
-    arg1 = args.arg_1
+    code = args.code
 
     df = pd.read_csv(src)
-
     # entry point of your transformation
-    ef = main(df,arg1)
+    ef = main(df,code)
 
+    
     # if you save some data , your component must create the output path
     # Even if a file as pipeline may required to create a temp path
     Path(dst).parent.mkdir(parents=True, exist_ok=True)

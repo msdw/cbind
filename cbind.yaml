@@ -1,0 +1,22 @@
+name: cbind
+label: Juxtapose 2 dataframes by columns
+description: Juxtapose 2 dataframes by columns
+inputs:
+- name: src1
+  type: String
+  description: Path of the local file containing the Input data 1.
+- name: src2
+  type: String
+  description: Path of the local file containing the Input data 2.  
+outputs:
+- name: dst
+  type: String
+  description: Path to write the output data
+implementation:
+  container:
+    command: [python, /src/main.py]
+    args: [
+      --src1, {inputPath1: src1},
+      --src2, {inputPath2: src2},
+      --dst, {outputPath: dst}, 
+      ]

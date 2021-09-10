@@ -2,27 +2,8 @@
  
 import pandas as pd
 import argparse
-import pandas as pd
-
 from pathlib import Path
 
-
-
-def main(df: pd.DataFrame, code: str='print("demo")') -> pd.DataFrame:
-    """Add a new column named placeholder fill with the arg_1 value
-
-
-    :param dataframe: The input dataframe. This should not be changed.
-    :param arg_1 : 
-
-    :returns: The updated dataframe
-    """
-    # execute code
-    try:
-        exec(code)
-    except:
-        print("Exception in Your Code, Please check")
-    return df
 
 
 if __name__ == '__main__':
@@ -34,26 +15,28 @@ if __name__ == '__main__':
     
     # do not use positionnal argument, always use the --arg syntax
     # note all the args name are they must be reported in the yaml component file
-    parser.add_argument('--src', required=True, type=str, help='Path of the local file containing the Input data.')
+    parser.add_argument('--src1', required=True, type=str, help='Path of the local file containing the Input data 1.')
+    parser.add_argument('--src2', required=True, type=str, help='Path of the local file containing the Input data 2.')    
     parser.add_argument('--dst', required=True, type=str, help='Path of the local file for output data.')
-    parser.add_argument('--code', required=True, type=str, help='Python Code to Execute')
 
         
 
     args = parser.parse_args()
-    src = args.src
+    src1 = args.src1
+    src2 = args.src2
     dst=args.dst
-    
-    # Warning : remember that argparse will convert any - to _ ( https://docs.python.org/dev/library/argparse.html#dest 
-    code = args.code
 
-    df = pd.read_csv(src)
-    # entry point of your transformation
-    ef = main(df,code)
-
+    df1 = pd.read_csv(src1)
+    df2 = pd.read_csv(src2)
+    try:
+        df=pd.concat([df1,df2],axis=1,ignore_index=True)
+        # if you save some data , your component must create the output path
+        # Even if a file as pipeline may required to create a temp path
+        Path(dst).parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(dst, index=False)     
+        print("cbind successful")   
+    except:
+        print("cbind is not possible because the 2 dataframes don't contains exactly the same number of rows.")
     
-    # if you save some data , your component must create the output path
-    # Even if a file as pipeline may required to create a temp path
-    Path(dst).parent.mkdir(parents=True, exist_ok=True)
-    ef.to_csv(dst, index=False)
+
 
